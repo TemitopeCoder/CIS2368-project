@@ -8,7 +8,7 @@ conn = create_connection()
 
 @app.route('/api/customer/all', methods=['GET'])
 def all_customers():
-    query = "SELECT * FROM customers"
+    query = "SELECT customerid, firstname, lastname, email FROM customers"
     customers = execute_read_query(conn, query)
     return jsonify(customers)
 
@@ -33,15 +33,17 @@ def add_customer():
 @app.route('/api/customer/update/', methods=['PUT'])
 def update_customer():
     data = request.get_json()
-    required_fields = ["email", "id"]
+    required_fields = ["email", "customerid", "firstname", "lastname"]
     if not all([field in data for field in required_fields]):
         return jsonify({"error": "Missing data"}), 402
 
     update_email = data["email"]
-    update_id = data["id"]
+    update_id = data["customerid"]
+    update_firstname = data["firstname"]
+    update_lastname = data["lastname"]
 
-    query = "UPDATE customers SET email = %s WHERE id = %s"
-    values = (update_email, update_id)
+    query = "UPDATE customers SET email = %s firstname = %s lastname = %s WHERE customerid = %s"
+    values = (update_email, update_id , update_firstname, update_lastname)
 
     execute_query(conn, query, values)
 

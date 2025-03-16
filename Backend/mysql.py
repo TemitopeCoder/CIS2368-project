@@ -26,14 +26,17 @@ def create_connection():
     return connection
 
 
-def execute_read_query(connection,query):
-    cursor = connection.cursor(pymysql.cursors.DictCursor)
+def execute_read_query(connection, query, params=None):
+    cursor = connection.cursor(pymysql.cursors.DictCursor)  # Use dictionary cursor
     result = None
     try:
-        cursor.execute(query)
+        if params:
+            cursor.execute(query, params)  # Use parameterized query
+        else:
+            cursor.execute(query)
         result = cursor.fetchall()
         return result
-    except Error as e:
+    except pymysql.Error as e:
         print(f"The error '{e}' occurred")
 
 def execute_query(connection, query, values=None):
