@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head', {title: 'Library Home'}) %>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section text-center">
+            <h1 class="display-4">Welcome to the Library Management System</h1>
+            <p class="lead">Manage your library's books, customers, and borrowing records with ease</p>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="bi bi-book"></i>
+                        </div>
+                        <h3>Book Management</h3>
+                        <p>Add, edit, and manage your library's book inventory with complete CRUD functionality.</p>
+                        <a href="/books" class="btn btn-primary">Manage Books</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h3>Customer Management</h3>
+                        <p>Manage library members, their information, and track their borrowing history.</p>
+                        <a href="/customers" class="btn btn-primary">Manage Customers</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="bi bi-arrow-left-right"></i>
+                        </div>
+                        <h3>Borrowing System</h3>
+                        <p>Track book loans, returns, and automatically calculate late fees when applicable.</p>
+                        <a href="/borrowings" class="btn btn-primary">Manage Borrowings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <!-- No page-specific scripts needed for home page -->
+</body>
+</html>

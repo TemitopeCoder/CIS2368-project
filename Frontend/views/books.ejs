@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head', {title: 'Book Management'}) %>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">Book Management</h1>
+        
+        <!-- Add Book Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Add New Book</h2>
+            </div>
+            <div class="card-body">
+                <form id="addBookForm">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="author" class="form-label">Author</label>
+                        <input type="text" class="form-control" id="author" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="genre" class="form-label">Genre</label>
+                        <input type="text" class="form-control" id="genre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" required>
+                            <option value="Available">Available</option>
+                            <option value="Unavailable">Unavailable</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Book</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Books Table -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Book Inventory</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Genre</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% books.forEach(book => { %>
+                            <tr>
+                                <td><%= book.title %></td>
+                                <td><%= book.author %></td>
+                                <td><%= book.genre %></td>
+                                <td><%= book.status %></td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning edit-btn" data-id="<%= book.id %>">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="<%= book.id %>">Delete</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Book Modal -->
+    <div class="modal fade" id="editBookModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editBookForm">
+                        <input type="hidden" id="editBookId">
+                        <div class="mb-3">
+                            <label for="editTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="editTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editAuthor" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="editAuthor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editGenre" class="form-label">Genre</label>
+                            <input type="text" class="form-control" id="editGenre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editStatus" class="form-label">Status</label>
+                            <select class="form-select" id="editStatus" required>
+                                <option value="Available">Available</option>
+                                <option value="Unavailable">Unavailable</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <!-- Page-specific scripts -->
+    <script>
+        $(document).ready(function() {
+            // Add Book
+            $('#addBookForm').submit(function(e) {
+                e.preventDefault();
+                const bookData = {
+                    title: $('#title').val(),
+                    author: $('#author').val(),
+                    genre: $('#genre').val(),
+                    status: $('#status').val()
+                };
+                
+                $.ajax({
+                    url: 'http://localhost:7000/api/books/add',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(bookData),
+                    success: function() {
+                        alert('Book added successfully!');
+                        window.location.reload();
+                    },
+                    error: function() {
+                        alert('Error adding book');
+                    }
+                });
+            });
+
+            // Edit Book - Open Modal
+            $('.edit-btn').click(function() {
+                const bookId = $(this).data('id');
+                const row = $(this).closest('tr');
+                
+                $('#editBookId').val(bookId);
+                $('#editTitle').val(row.find('td:eq(0)').text());
+                $('#editAuthor').val(row.find('td:eq(1)').text());
+                $('#editGenre').val(row.find('td:eq(2)').text());
+                $('#editStatus').val(row.find('td:eq(3)').text());
+                
+                new bootstrap.Modal(document.getElementById('editBookModal')).show();
+            });
+
+            // Edit Book - Submit
+            $('#editBookForm').submit(function(e) {
+                e.preventDefault();
+                const bookData = {
+                    bookid: $('#editBookId').val(),
+                    title: $('#editTitle').val(),
+                    author: $('#editAuthor').val(),
+                    genre: $('#editGenre').val(),
+                    status: $('#editStatus').val()
+                };
+                
+                $.ajax({
+                    url: 'http://localhost:7000/api/books/update',
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(bookData),
+                    success: function() {
+                        alert('Book updated successfully!');
+                        window.location.reload();
+                    },
+                    error: function() {
+                        alert('Error updating book');
+                    }
+                });
+            });
+
+            // Delete Book
+            $('.delete-btn').click(function() {
+                if (confirm('Are you sure you want to delete this book?')) {
+                    const bookId = $(this).data('id');
+                    
+                    $.ajax({
+                        url: 'http://localhost:7000/api/books/delete/',
+                        type: 'DELETE',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ id: bookId }),
+                        success: function() {
+                            alert('Book deleted successfully!');
+                            window.location.reload();
+                        },
+                        error: function() {
+                            alert('Error deleting book');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

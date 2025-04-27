@@ -5,18 +5,21 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 Debug = True
 
-conn = create_connection()
 
 # Books Inventory
 
 @app.route('/api/books/inventory', methods=['GET'])
 def view_books():
+    conn = create_connection()
+
     query = "SELECT * FROM books"
     books = execute_read_query(conn, query)
     return jsonify(books)
 
 @app.route('/api/books/add', methods=['POST'])
 def add_books():
+    conn = create_connection()
+
     data = request.get_json()
     required_fields = ["title", "author", "genre", "status"]
 
@@ -36,6 +39,8 @@ def add_books():
 
 @app.route('/api/books/update', methods=['PUT'])
 def update_status():
+    conn = create_connection()
+
     data = request.get_json()
     required_fields = ["status", "bookid", "title", "author", "genre"]
 
@@ -56,6 +61,8 @@ def update_status():
 
 @app.route('/api/books/delete/', methods=['DELETE'])
 def delete_book():
+    conn = create_connection()
+
     data = request.get_json()
     required_fields = ["id"]
 
@@ -77,12 +84,16 @@ def hash_password(password):
 
 @app.route('/api/customer/all', methods=['GET'])
 def all_customers():
+    conn = create_connection()
+
     query = "SELECT customerid, firstname, lastname, email FROM customers"
     customers = execute_read_query(conn, query)
     return jsonify(customers)
 
 @app.route('/api/customer/add', methods=['POST'])
 def add_customer():
+    conn = create_connection()
+
     data = request.get_json()
     required_fields = ["email", "firstname", "lastname", "passwordhash"]
     if not all([field in data for field in required_fields]):
@@ -101,6 +112,8 @@ def add_customer():
 
 @app.route('/api/customer/update/', methods=['PUT'])
 def update_customer():
+    conn = create_connection()
+
     data = request.get_json()
     required_fields = ["email", "customerid", "firstname", "lastname", "passwordhash"]
     if not all([field in data for field in required_fields]):
@@ -121,6 +134,8 @@ def update_customer():
 
 @app.route('/api/customer/delete/', methods=['DELETE'])
 def delete_customer():
+    conn = create_connection()
+
     data = request.get_json()
     required_fields = ["id"]
     if not all([field in data for field in required_fields]):
@@ -140,6 +155,8 @@ def delete_customer():
 
 @app.route('/api/borrowing', methods=['POST'])
 def books_borrow():
+    conn = create_connection()
+
     data = request.get_json()
     required_fields = ["bookid", "customerid"]
     if not all(field in data for field in required_fields):
@@ -177,6 +194,8 @@ def books_borrow():
     
 @app.route('/api/return', methods=['POST'])
 def books_return():
+    conn = create_connection()
+
     data = request.get_json()
     required_fields = ["bookid", "customerid"]
     if not all([field in data for field in required_fields]):
@@ -208,12 +227,19 @@ def books_return():
     return jsonify({"message": "Book returned", "late_fee": late_fee}), 202
 
 @app.route('/api/borrowing/all', methods=['GET'])
-
 def all_borrowing():
-    query = '''SELECT books.bookid, books.title, customers.customerid, customers.firstname, customers.lastname, borrowingrecords.borrowdate, borrowingrecords.returndate, borrowingrecords.late_fee FROM borrowingrecords
-    JOIN books ON borrowingrecords.bookid = books.bookid JOIN customers ON borrowingrecords.customerid = customers.customerid where books.status = 'Borrowed' ''' 
+    conn = create_connection()
+
+    query = '''
+    SELECT books.bookid, books.title, customers.customerid, customers.firstname, customers.lastname,
+    borrowingrecords.borrowdate, borrowingrecords.returndate, borrowingrecords.late_fee
+    FROM borrowingrecords
+    JOIN books ON borrowingrecords.bookid = books.bookid
+    JOIN customers ON borrowingrecords.customerid = customers.customerid
+    WHERE borrowingrecords.returndate IS NULL
+    '''
     borrowing = execute_read_query(conn, query)
-    return jsonify(borrowing )
+    return jsonify(borrowing)
 
 
 if __name__ == '__main__':

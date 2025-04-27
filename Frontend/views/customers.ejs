@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head', {title: 'Customer Management'}) %>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">Customer Management</h1>
+        
+        <!-- Add Customer Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Add New Customer</h2>
+            </div>
+            <div class="card-body">
+                <form id="addCustomerForm">
+                    <div class="mb-3">
+                        <label for="firstname" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstname" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastname" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastname" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Customer</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Customers Table -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Customer List</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% customers.forEach(customer => { %>
+                            <tr>
+                                <td><%= customer.firstname %></td>
+                                <td><%= customer.lastname %></td>
+                                <td><%= customer.email %></td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning edit-btn" data-id="<%= customer.customerid %>">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="<%= customer.customerid %>">Delete</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Customer Modal -->
+    <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCustomerForm">
+                        <input type="hidden" id="editCustomerId">
+                        <div class="mb-3">
+                            <label for="editFirstname" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="editFirstname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLastname" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="editLastname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="editPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        // Customer management JavaScript here
+        $(document).ready(function() {
+            // Similar structure to books.ejs scripts
+            // Add your customer-specific JavaScript here
+        });
+    </script>
+</body>
+</html>

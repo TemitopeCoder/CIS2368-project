@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head', {title: title}) %>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="container mt-4">
+        <h1 class="mb-4"><%= title %></h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Borrow a Book</h2>
+            </div>
+            <div class="card-body">
+                <form id="borrowForm">
+                    <div class="mb-3">
+                        <label class="form-label">Book</label>
+                        <select class="form-select" id="bookSelect" required>
+                            <option value="">-- Select --</option>
+                            <% if (availableBooks?.length) { %>
+                                <% availableBooks.forEach(book => { %>
+                                    <option value="<%= book.id || book.bookid %>">
+                                        <%= book.title %> (<%= book.author %>)
+                                    </option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Customer</label>
+                        <select class="form-select" id="customerSelect" required>
+                            <option value="">-- Select --</option>
+                            <% if (eligibleCustomers?.length) { %>
+                                <% eligibleCustomers.forEach(customer => { %>
+                                    <option value="<%= customer.id || customer.customerid %>">
+                                        <%= customer.firstname %> <%= customer.lastname %>
+                                    </option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Borrow</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h2>Current Borrowings</h2>
+                    </div>
+                    <div class="card-body">
+                        <% if (borrowings?.length) { %>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <!-- Table content -->
+                                </table>
+                            </div>
+                        <% } else { %>
+                            <div class="alert alert-info">No current borrowings</div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h2>Borrowing History</h2>
+                    </div>
+                    <div class="card-body">
+                        <% if (borrowingHistory?.length) { %>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <!-- Table content -->
+                                </table>
+                            </div>
+                        <% } else { %>
+                            <div class="alert alert-info">No history found</div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        $(document).ready(function() {
+            // AJAX handling here
+        });
+    </script>
+</body>
+</html>
